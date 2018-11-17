@@ -121,11 +121,9 @@ public class BmpImage extends JPanel {
                 int g = (color >> 8) & 0xff;
                 int b = color & 0xff;
                 int gray = (int) (0.3 * r + 0.59 * g + 0.11 * b);
-                int newPixel = colorToRGB(255, gray, gray, gray);
-                Color newColor=new Color(newPixel);
-                imageR[h][w]=newColor.getRed();
-                imageG[h][w]=newColor.getGreen();
-                imageB[h][w]=newColor.getBlue();
+                imageR[h][w]=gray;
+                imageG[h][w]=gray;
+                imageB[h][w]=gray;
             }
         }
         return this;
