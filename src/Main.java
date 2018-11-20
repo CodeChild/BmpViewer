@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -28,27 +30,48 @@ public class Main {
         bmpImage.readInfoHead().readRGB24();
         infoLabel.setBounds(10,bmpImage.imageHeigh+20,400,20);
         infoLabel.setText(bmpImage.imageWidth+"x"+bmpImage.imageHeigh+" "+bmpImage.bitCount+"位"
-                +"源图大小："+bmpImage.imageSize+"字节");
+                +" 源图大小："+bmpImage.imageSize+"字节");
         frame.setBounds(0,0,bmpImage.imageWidth+500,bmpImage.imageHeigh+100);
         grayButton.setBounds(bmpImage.imageWidth+30,20,95,30);
         grayButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               repaint();
+                bmpImage.transformGray();
+                repaint();
             }
         });
         scaleLabel.setBounds(bmpImage.imageWidth+30,60,50,30);
         scaleSlider.setBounds(bmpImage.imageWidth+60,60,300,30);
+        scaleSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(e.getSource() instanceof JSlider){
+                    JSlider source=(JSlider) e.getSource();
+                    int imageWidth=bmpImage.imageWidth;
+                    int imageHeigh=bmpImage.imageHeigh;
+                    int[][] imageR=bmpImage.imageR;
+                    int[][] imageG=bmpImage.imageG;
+                    int[][] imageB=bmpImage.imageB;
+                    float scaleRatio=source.getValue()/100f*2f;
+                    bmpImage.scale(scaleRatio);
+                    repaint();
+
+                }
+            }
+        });
         frame.add(infoLabel);
         frame.add(grayButton);
         frame.add(scaleLabel);
         frame.add(scaleSlider);
-        frame.add(new JScrollPane(bmpImage));
+        Dimension dimension=new Dimension(600,400);
+        JScrollPane imgScrollPane=new JScrollPane(bmpImage);
+        imgScrollPane.setPreferredSize(dimension);
+        frame.add(imgScrollPane);
         frame.setVisible(true);
 
     }
     public static void repaint(){
-        bmpImage.transformGray().repaint();
+        bmpImage.repaint();
         frame.repaint();
     }
     public static void main(String[] args) {

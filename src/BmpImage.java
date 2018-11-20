@@ -28,7 +28,6 @@ public class BmpImage extends JPanel {
             e.printStackTrace();
         }
     }
-
     public BmpImage readInfoHead() {
         int bilen = 40;
         byte bi[] = new byte[bilen];
@@ -99,6 +98,7 @@ public class BmpImage extends JPanel {
         this.repaint();
         return this;
     }
+
     private static int colorToRGB(int alpha, int red, int green, int blue) {
 
         int newPixel = 0;
@@ -113,6 +113,7 @@ public class BmpImage extends JPanel {
         return newPixel;
 
     }
+
     public BmpImage transformGray() {
         for (int h = 0; h < imageHeigh; h++) {
             for (int w = imageWidth - 1; w >= 0; w--) {
@@ -121,11 +122,40 @@ public class BmpImage extends JPanel {
                 int g = (color >> 8) & 0xff;
                 int b = color & 0xff;
                 int gray = (int) (0.3 * r + 0.59 * g + 0.11 * b);
-                imageR[h][w]=gray;
-                imageG[h][w]=gray;
-                imageB[h][w]=gray;
+                imageR[h][w] = gray;
+                imageG[h][w] = gray;
+                imageB[h][w] = gray;
             }
         }
+        return this;
+    }
+    //Nearest Interpolation
+    public BmpImage scale(float scaleRatio) {
+        int desWidth = (int) (imageWidth * scaleRatio);
+        int desHeigh = (int) (imageHeigh * scaleRatio);
+        int[][] imageR = new int[desHeigh][desWidth];
+        int[][] imageG = new int[desHeigh][desWidth];
+        int[][] imageB = new int[desHeigh][desWidth];
+        for (int i = 0; i < desHeigh; i++) {
+            int tSrcH = (int) ((int) i/scaleRatio + 0.5);
+            for (int j = 0; j < desWidth; j++) {
+                int tSrcW = (int) ((int) j/scaleRatio + 0.5);
+                if (tSrcW >= 0 && tSrcW < imageWidth && tSrcH >= 0 && tSrcH < imageHeigh) {
+                    imageR[i][j] = this.imageR[tSrcH][tSrcW];
+                    imageG[i][j] = this.imageG[tSrcH][tSrcW];
+                    imageB[i][j] = this.imageB[tSrcH][tSrcW];
+                } else {
+                    imageR[i][j] = 255;
+                    imageG[i][j] = 255;
+                    imageB[i][j] = 255;
+                }
+            }
+        }
+        this.imageR = imageR;
+        this.imageG = imageG;
+        this.imageB=imageB;
+        this.imageHeigh = desHeigh;
+        this.imageWidth = desWidth;
         return this;
     }
 
