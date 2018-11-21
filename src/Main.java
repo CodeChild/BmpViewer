@@ -16,6 +16,7 @@ public class Main {
     public static JButton grayButton=new JButton("灰度");
     public static JSlider scaleSlider=new JSlider();
     public static BmpImage bmpImage=new BmpImage(path);
+    public static BmpImage zoomedImage;
     private static void createAndShowGUI() {
         FontUIResource fontUIResource = new FontUIResource(new Font("宋体",Font.PLAIN, 15));
         for (Enumeration keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
@@ -37,6 +38,8 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 bmpImage.transformGray();
+                if(zoomedImage!=null)
+                    zoomedImage.transformGray();
                 repaint();
             }
         });
@@ -47,14 +50,16 @@ public class Main {
             public void stateChanged(ChangeEvent e) {
                 if(e.getSource() instanceof JSlider){
                     JSlider source=(JSlider) e.getSource();
-                    int imageWidth=bmpImage.imageWidth;
-                    int imageHeigh=bmpImage.imageHeigh;
-                    int[][] imageR=bmpImage.imageR;
-                    int[][] imageG=bmpImage.imageG;
-                    int[][] imageB=bmpImage.imageB;
                     float scaleRatio=source.getValue()/100f*2f;
-                    bmpImage.scale(scaleRatio);
-                    repaint();
+                    zoomedImage=bmpImage.scale(scaleRatio);
+                    frame.getContentPane().removeAll();
+                    frame.add(infoLabel);
+                    frame.add(grayButton);
+                    frame.add(scaleLabel);
+                    frame.add(scaleSlider);
+                    frame.add(zoomedImage);
+                    frame.revalidate();
+                    frame.repaint();
 
                 }
             }

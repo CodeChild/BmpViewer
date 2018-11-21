@@ -28,6 +28,13 @@ public class BmpImage extends JPanel {
             e.printStackTrace();
         }
     }
+    BmpImage(int[][] imageR,int[][] imageG,int[][] imageB,int width,int heigh){
+        this.imageR=imageR;
+        this.imageG=imageG;
+        this.imageB=imageB;
+        this.imageWidth=width;
+        this.imageHeigh=heigh;
+    }
     public BmpImage readInfoHead() {
         int bilen = 40;
         byte bi[] = new byte[bilen];
@@ -52,7 +59,6 @@ public class BmpImage extends JPanel {
 
         return this;
     }
-
     //转成int
     public int ChangeInt(byte[] bi, int start) {
         return (((int) bi[start] & 0xff) << 24)
@@ -151,12 +157,7 @@ public class BmpImage extends JPanel {
                 }
             }
         }
-        this.imageR = imageR;
-        this.imageG = imageG;
-        this.imageB=imageB;
-        this.imageHeigh = desHeigh;
-        this.imageWidth = desWidth;
-        return this;
+        return new BmpImage(imageR,imageG,imageB,desWidth,desHeigh);
     }
 
     @Override
