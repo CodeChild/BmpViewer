@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Bmp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Bmp_jar</output-path>
+    <root id="archive" name="Bmp.jar">
+      <element id="module-output" name="Bmp" />
+    </root>
+  </artifact>
+</component>
