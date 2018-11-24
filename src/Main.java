@@ -94,13 +94,7 @@ public class Main {
                     float scaleRatio = source.getValue() / 100f * 2f;
                     zoomedImage = bmpImage.scale(scaleRatio);
                     frame.getContentPane().removeAll();
-                    frame.add(infoLabel);
-                    frame.add(grayButton);
-                    frame.add(scaleLabel);
-                    frame.add(scaleSlider);
-                    frame.add(redCheckBox);
-                    frame.add(greenCheckBox);
-                    frame.add(blueCheckBox);
+                    initFrame();
                     frame.add(rotateRightButton);
                     frame.add(rotateLeftButton);
                     frame.add(zoomedImage);
@@ -133,13 +127,7 @@ public class Main {
         redCheckBox.addActionListener(checkBoxActionListenner);
         greenCheckBox.addActionListener(checkBoxActionListenner);
         blueCheckBox.addActionListener(checkBoxActionListenner);
-        frame.add(infoLabel);
-        frame.add(grayButton);
-        frame.add(scaleLabel);
-        frame.add(scaleSlider);
-        frame.add(redCheckBox);
-        frame.add(greenCheckBox);
-        frame.add(blueCheckBox);
+        initFrame();
         frame.add(rotateRightButton);
         frame.add(rotateLeftButton);
         Dimension dimension = new Dimension(600, 400);
@@ -150,9 +138,7 @@ public class Main {
 
     }
 
-    private static void updateRGBChannel() {
-        BmpImage rgbChannelImage = bmpImage.rgbChannel(rgbChannel[0], rgbChannel[1], rgbChannel[2]);
-        frame.getContentPane().removeAll();
+    private static void initFrame() {
         frame.add(infoLabel);
         frame.add(grayButton);
         frame.add(scaleLabel);
@@ -160,6 +146,12 @@ public class Main {
         frame.add(redCheckBox);
         frame.add(greenCheckBox);
         frame.add(blueCheckBox);
+    }
+
+    private static void updateRGBChannel() {
+        BmpImage rgbChannelImage = bmpImage.rgbChannel(rgbChannel[0], rgbChannel[1], rgbChannel[2]);
+        frame.getContentPane().removeAll();
+        initFrame();
         frame.add(rgbChannelImage);
         frame.revalidate();
         frame.repaint();
