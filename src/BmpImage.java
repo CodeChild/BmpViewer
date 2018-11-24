@@ -159,7 +159,31 @@ public class BmpImage extends JPanel {
         }
         return new BmpImage(imageR,imageG,imageB,desWidth,desHeigh);
     }
-
+    @Deprecated
+    public BmpImage rotate90(){
+        int desHeigh=imageWidth;
+        int desWidth=imageHeigh;
+        int[][] imageR = new int[desHeigh][desWidth];
+        int[][] imageG = new int[desHeigh][desWidth];
+        int[][] imageB = new int[desHeigh][desWidth];
+        for (int h=0;h<desHeigh;h++){
+            for (int w=0;w<desWidth;w++){
+                imageR[h][w]=imageR[imageWidth - h - 1][w];
+                imageG[h][w]=imageG[imageWidth - h - 1][w];
+                imageB[h][w]=imageB[imageWidth - h - 1][w];
+            }
+        }
+        return new BmpImage(imageR,imageG,imageB,desWidth,desHeigh);
+    }
+    public BmpImage rgbChannel(boolean showR,boolean showG,boolean showB){
+        int[][] imageR=new int[imageHeigh][imageWidth];
+        int[][] imageG=new int[imageHeigh][imageWidth];
+        int[][] imageB=new int[imageHeigh][imageWidth];
+        if (showR) imageR=this.imageR;
+        if(showG)  imageG=this.imageG;
+        if(showB)  imageB=this.imageB;
+        return new BmpImage(imageR,imageG,imageB,imageWidth,imageHeigh);
+    }
     @Override
     public void paint(Graphics g) {
         super.paint(g);

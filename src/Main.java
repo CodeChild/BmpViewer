@@ -14,9 +14,13 @@ public class Main {
     public static JLabel infoLabel=new JLabel();
     public static JLabel scaleLabel= new JLabel("缩放：");
     public static JButton grayButton=new JButton("灰度");
+    public static JCheckBox redCheckBox=new JCheckBox("红色通道");
+    public static JCheckBox greenCheckBox=new JCheckBox("绿色通道");
+    public static JCheckBox blueCheckBox=new JCheckBox("蓝色通道");
     public static JSlider scaleSlider=new JSlider();
     public static BmpImage bmpImage=new BmpImage(path);
     public static BmpImage zoomedImage;
+    public static boolean[] rgbChannel={true,true,true};
     private static void createAndShowGUI() {
         FontUIResource fontUIResource = new FontUIResource(new Font("宋体",Font.PLAIN, 15));
         for (Enumeration keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
@@ -40,10 +44,19 @@ public class Main {
                 bmpImage.transformGray();
                 if(zoomedImage!=null)
                     zoomedImage.transformGray();
+                frame.remove(redCheckBox);
+                frame.remove(greenCheckBox);
+                frame.remove(blueCheckBox);
                 repaint();
             }
         });
         scaleLabel.setBounds(bmpImage.imageWidth+30,60,50,30);
+        redCheckBox.setSelected(true);
+        greenCheckBox.setSelected(true);
+        blueCheckBox.setSelected(true);
+        redCheckBox.setBounds(bmpImage.imageWidth+30,110,160,30);
+        greenCheckBox.setBounds(bmpImage.imageWidth+190,110,160,30);
+        blueCheckBox.setBounds(bmpImage.imageWidth+350,110,160,30);
         scaleSlider.setBounds(bmpImage.imageWidth+60,60,300,30);
         scaleSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -57,6 +70,9 @@ public class Main {
                     frame.add(grayButton);
                     frame.add(scaleLabel);
                     frame.add(scaleSlider);
+                    frame.add(redCheckBox);
+                    frame.add(greenCheckBox);
+                    frame.add(blueCheckBox);
                     frame.add(zoomedImage);
                     frame.revalidate();
                     frame.repaint();
@@ -64,15 +80,55 @@ public class Main {
                 }
             }
         });
+        ActionListener checkBoxActionListenner=new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (redCheckBox.isSelected())
+                    rgbChannel[0] = true;
+                else
+                    rgbChannel[0] = false;
+                if (greenCheckBox.isSelected())
+                    rgbChannel[1] = true;
+                else
+                    rgbChannel[1] = false;
+                if (blueCheckBox.isSelected())
+                    rgbChannel[2] = true;
+                else
+                    rgbChannel[2] = false;
+                updateRGBChannel();
+            }
+        };
+
+        redCheckBox.addActionListener(checkBoxActionListenner);
+        greenCheckBox.addActionListener(checkBoxActionListenner);
+        blueCheckBox.addActionListener(checkBoxActionListenner);
         frame.add(infoLabel);
         frame.add(grayButton);
         frame.add(scaleLabel);
         frame.add(scaleSlider);
+        frame.add(redCheckBox);
+        frame.add(greenCheckBox);
+        frame.add(blueCheckBox);
         Dimension dimension=new Dimension(600,400);
         JScrollPane imgScrollPane=new JScrollPane(bmpImage);
         imgScrollPane.setPreferredSize(dimension);
         frame.add(imgScrollPane);
         frame.setVisible(true);
+
+    }
+    private static void updateRGBChannel(){
+        BmpImage rgbChannelImage=bmpImage.rgbChannel(rgbChannel[0],rgbChannel[1],rgbChannel[2]);
+        frame.getContentPane().removeAll();
+        frame.add(infoLabel);
+        frame.add(grayButton);
+        frame.add(scaleLabel);
+        frame.add(scaleSlider);
+        frame.add(redCheckBox);
+        frame.add(greenCheckBox);
+        frame.add(blueCheckBox);
+        frame.add(rgbChannelImage);
+        frame.revalidate();
+        frame.repaint();
 
     }
     public static void repaint(){
