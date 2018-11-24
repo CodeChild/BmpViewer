@@ -28,13 +28,15 @@ public class BmpImage extends JPanel {
             e.printStackTrace();
         }
     }
-    BmpImage(int[][] imageR,int[][] imageG,int[][] imageB,int width,int heigh){
-        this.imageR=imageR;
-        this.imageG=imageG;
-        this.imageB=imageB;
-        this.imageWidth=width;
-        this.imageHeigh=heigh;
+
+    BmpImage(int[][] imageR, int[][] imageG, int[][] imageB, int width, int heigh) {
+        this.imageR = imageR;
+        this.imageG = imageG;
+        this.imageB = imageB;
+        this.imageWidth = width;
+        this.imageHeigh = heigh;
     }
+
     public BmpImage readInfoHead() {
         int bilen = 40;
         byte bi[] = new byte[bilen];
@@ -59,6 +61,7 @@ public class BmpImage extends JPanel {
 
         return this;
     }
+
     //转成int
     public int ChangeInt(byte[] bi, int start) {
         return (((int) bi[start] & 0xff) << 24)
@@ -135,6 +138,7 @@ public class BmpImage extends JPanel {
         }
         return this;
     }
+
     //Nearest Interpolation
     public BmpImage scale(float scaleRatio) {
         int desWidth = (int) (imageWidth * scaleRatio);
@@ -143,9 +147,9 @@ public class BmpImage extends JPanel {
         int[][] imageG = new int[desHeigh][desWidth];
         int[][] imageB = new int[desHeigh][desWidth];
         for (int i = 0; i < desHeigh; i++) {
-            int tSrcH = (int) ((int) i/scaleRatio + 0.5);
+            int tSrcH = (int) ((int) i / scaleRatio + 0.5);
             for (int j = 0; j < desWidth; j++) {
-                int tSrcW = (int) ((int) j/scaleRatio + 0.5);
+                int tSrcW = (int) ((int) j / scaleRatio + 0.5);
                 if (tSrcW >= 0 && tSrcW < imageWidth && tSrcH >= 0 && tSrcH < imageHeigh) {
                     imageR[i][j] = this.imageR[tSrcH][tSrcW];
                     imageG[i][j] = this.imageG[tSrcH][tSrcW];
@@ -157,33 +161,47 @@ public class BmpImage extends JPanel {
                 }
             }
         }
-        return new BmpImage(imageR,imageG,imageB,desWidth,desHeigh);
+        return new BmpImage(imageR, imageG, imageB, desWidth, desHeigh);
     }
-    @Deprecated
-    public BmpImage rotate90(){
-        int desHeigh=imageWidth;
-        int desWidth=imageHeigh;
+
+    //isRight=true时顺时针 否则位逆时针
+    public BmpImage rotate90(boolean isRight) {
+        int desHeigh = imageWidth;
+        int desWidth = imageHeigh;
         int[][] imageR = new int[desHeigh][desWidth];
         int[][] imageG = new int[desHeigh][desWidth];
         int[][] imageB = new int[desHeigh][desWidth];
-        for (int h=0;h<desHeigh;h++){
-            for (int w=0;w<desWidth;w++){
-                imageR[h][w]=imageR[imageWidth - h - 1][w];
-                imageG[h][w]=imageG[imageWidth - h - 1][w];
-                imageB[h][w]=imageB[imageWidth - h - 1][w];
+        for (int h = 0; h < desHeigh; h++) {
+            for (int w = 0; w < desWidth; w++) {
+                if (isRight) {
+                    imageR[h][w] = this.imageR[imageHeigh - w - 1][h];
+                    imageG[h][w] = this.imageG[imageHeigh - w - 1][h];
+                    imageB[h][w] = this.imageB[imageHeigh - w - 1][h];
+                } else {
+                    imageR[h][w] = this.imageR[w][imageWidth - h - 1];
+                    imageG[h][w] = this.imageG[w][imageWidth - h - 1];
+                    imageB[h][w] = this.imageB[w][imageWidth - h - 1];
+                }
             }
         }
-        return new BmpImage(imageR,imageG,imageB,desWidth,desHeigh);
+        this.imageWidth = desWidth;
+        this.imageHeigh = desHeigh;
+        this.imageR = imageR;
+        this.imageB = imageB;
+        this.imageG = imageG;
+        return this;
     }
-    public BmpImage rgbChannel(boolean showR,boolean showG,boolean showB){
-        int[][] imageR=new int[imageHeigh][imageWidth];
-        int[][] imageG=new int[imageHeigh][imageWidth];
-        int[][] imageB=new int[imageHeigh][imageWidth];
-        if (showR) imageR=this.imageR;
-        if(showG)  imageG=this.imageG;
-        if(showB)  imageB=this.imageB;
-        return new BmpImage(imageR,imageG,imageB,imageWidth,imageHeigh);
+
+    public BmpImage rgbChannel(boolean showR, boolean showG, boolean showB) {
+        int[][] imageR = new int[imageHeigh][imageWidth];
+        int[][] imageG = new int[imageHeigh][imageWidth];
+        int[][] imageB = new int[imageHeigh][imageWidth];
+        if (showR) imageR = this.imageR;
+        if (showG) imageG = this.imageG;
+        if (showB) imageB = this.imageB;
+        return new BmpImage(imageR, imageG, imageB, imageWidth, imageHeigh);
     }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);

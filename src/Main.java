@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -5,6 +6,8 @@ import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 
 public class Main {
@@ -14,6 +17,8 @@ public class Main {
     public static JLabel infoLabel=new JLabel();
     public static JLabel scaleLabel= new JLabel("缩放：");
     public static JButton grayButton=new JButton("灰度");
+    public static JButton rotateRightButton=new JButton("右转90度");
+    public static JButton rotateLeftButton=new JButton("左转90度");
     public static JCheckBox redCheckBox=new JCheckBox("红色通道");
     public static JCheckBox greenCheckBox=new JCheckBox("绿色通道");
     public static JCheckBox blueCheckBox=new JCheckBox("蓝色通道");
@@ -57,6 +62,24 @@ public class Main {
         redCheckBox.setBounds(bmpImage.imageWidth+30,110,160,30);
         greenCheckBox.setBounds(bmpImage.imageWidth+190,110,160,30);
         blueCheckBox.setBounds(bmpImage.imageWidth+350,110,160,30);
+        rotateRightButton.setBounds(bmpImage.imageWidth+30,150,100,30);
+        rotateLeftButton.setBounds(bmpImage.imageWidth+150,150,100,30);
+        rotateRightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bmpImage.rotate90(true);
+                frame.setBounds(0,0,bmpImage.imageWidth+500,bmpImage.imageHeigh+100);
+                repaint();
+            }
+        });
+        rotateLeftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bmpImage.rotate90(false);
+                frame.setBounds(0,0,bmpImage.imageWidth+500,bmpImage.imageHeigh+100);
+                repaint();
+            }
+        });
         scaleSlider.setBounds(bmpImage.imageWidth+60,60,300,30);
         scaleSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -95,6 +118,7 @@ public class Main {
                     rgbChannel[2] = true;
                 else
                     rgbChannel[2] = false;
+                scaleSlider.setValue(50);
                 updateRGBChannel();
             }
         };
@@ -109,6 +133,8 @@ public class Main {
         frame.add(redCheckBox);
         frame.add(greenCheckBox);
         frame.add(blueCheckBox);
+        frame.add(rotateRightButton);
+        frame.add(rotateLeftButton);
         Dimension dimension=new Dimension(600,400);
         JScrollPane imgScrollPane=new JScrollPane(bmpImage);
         imgScrollPane.setPreferredSize(dimension);
